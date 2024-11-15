@@ -33,7 +33,7 @@
         background-color: #fff;
         box-shadow: 1px 2px 3px #0003;
         border-radius: 10px;
-        height: calc(((100vw - 30px) / 3));
+        height: calc(((100vw - 30px) / 2));
         overflow: hidden;
       }
     }
@@ -234,8 +234,9 @@
 
 /* Sections */
 .section {
-  width: 90%;
+  width: 100%;
   margin-top: 10px;
+  padding: 0px 10px;
   h3 {
     display: flex;
     align-items: center;
@@ -248,6 +249,15 @@
     }
     span {
       margin-left: auto;
+    }
+    .right {
+      margin-left: auto;
+      font-weight: 400;
+      font-size: 14px;
+      color: #0088ff;
+      i {
+        margin-left: 5px;
+      }
     }
   }
   .view-all {
@@ -268,6 +278,192 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
   }
+  .list-2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cột đều nhau */
+    grid-template-rows: repeat(2, auto); /* 2 dòng, chiều cao tự động */
+    gap: 8px;
+    .card {
+      display: flex;
+      flex: 1;
+      height: 140px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      .discount {
+        border-radius: 0px 0px 8px 0px;
+        padding: 1px 4px;
+        color: #ff0101;
+        top: 0;
+        left: 0;
+        display: flex;
+        gap: 2px;
+        font-size: 12px;
+        position: absolute;
+        box-shadow: 1px 2px 3px #0002;
+        background-color: #ffffffd8; /* Đảm bảo nền trong suốt */
+        backdrop-filter: blur(5px); /* Làm mờ đằng sau */
+        -webkit-backdrop-filter: blur(5px); /* Hỗ trợ trình duyệt cũ */
+        .rate {
+          font-weight: 550;
+        }
+        .value {
+          font-style: italic;
+          color: #e4a0a0;
+          text-decoration: line-through; /* Thêm gạch chéo */
+        }
+      }
+      .logo-res {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        top: 2px;
+        right: 2px;
+        position: absolute;
+        background-color: #d1dde7;
+        box-shadow: 1px 2px 3px #0002;
+      }
+      .image {
+        width: 100%;
+        display: flex;
+        flex: 1;
+        background-color: #d1dde7;
+      }
+      .name {
+        color: #4b6d8a;
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        padding: 4px 3px 0px 3px;
+        font-size: 14px; /* Có thể tùy chỉnh theo ý muốn */
+        line-height: 1.4; /* Giảm khoảng cách giữa các dòng */
+      }
+      .res {
+        padding: 0px 3px;
+        font-size: 11px;
+        line-height: 1.2;
+        color: #c0c0c0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        &.veried {
+          color: #0099ff;
+        }
+      }
+      .more {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        .price {
+          font-size: 13px;
+          padding: 0px 0px 0px 3px;
+          color: orangered;
+        }
+        .count {
+          color: #999;
+          padding: 0px 3px 0px 0px;
+        }
+      }
+    }
+  }
+  .list-restaurant {
+    display: flex;
+    flex-direction: column;
+    .block {
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 1px 2px 3px #0003;
+      overflow: hidden;
+      .card {
+        display: flex;
+        gap: 5px;
+        border-bottom: 1px solid #e7e7e7;
+        padding-left: 4px;
+        &:last-child {
+          border-bottom: hidden;
+        }
+        .logo {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 6px;
+          .img {
+            background-color: #fff;
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            box-shadow: 1px 2px 3px #0003;
+            overflow: hidden;
+          }
+        }
+        .info {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          padding: 5px 4px;
+          .name {
+            font-size: 14px;
+            padding: 2px 0px 0px 0px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .descript {
+            font-size: 12px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-bottom: 2px;
+          }
+          .nearly {
+            display: flex;
+            .item {
+              display: flex;
+              align-items: center;
+              margin-right: 5px;
+              display: inline-block;
+              font-size: 12px;
+              border-radius: 5px;
+              padding: 1px 6px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              background-color: #9abfe0;
+              color: #fff;
+              i {
+                margin-right: 5px;
+                font-size: 9px;
+              }
+            }
+          }
+          .address {
+            width: 100%;
+            font-size: 12px;
+            color: #4facfe;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            div {
+              display: inline-block;
+            }
+            i {
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
   .grid {
     display: flex;
     flex-wrap: wrap;
@@ -275,11 +471,71 @@
     gap: 6px;
     .card {
       flex: 1 1 calc(50% - 6px);
-      height: 100px;
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       margin-bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      .image {
+        height: 80px;
+        background-color: #cbd8e4;
+      }
+      .info {
+        display: flex;
+        flex-direction: column;
+        padding: 2px 4px;
+        .top {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .price {
+            color: orangered;
+            font-size: 15px;
+          }
+          .rate {
+            color: #999;
+            font-size: 13px;
+          }
+        }
+        .name {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #003666;
+        }
+        .res {
+          display: flex;
+          flex-direction: column;
+          .logo {
+            display: inline-block;
+            min-width: 18px;
+            height: 18px;
+            background-color: #cbd8e4;
+            border-radius: 5px;
+            box-shadow: 1px 2px 3px #0002;
+          }
+          .name {
+            color: #0088ff;
+            font-size: 13px;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 400;
+          }
+          .address {
+            color: #6a8399;
+            font-size: 13px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 400;
+          }
+        }
+      }
     }
   }
 }

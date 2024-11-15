@@ -8,6 +8,11 @@ import Home_catalog from "./layouts/catalog";
 import Home_slider from "./layouts/slider";
 import User_wellcome from "./layouts/user_wellcome";
 import { authorize, getSetting, getUserInfo } from "zmp-sdk";
+import Today_recommend from "./tools/today-res";
+import Nearly_restaurant from "./tools/nearly-res";
+import Noibat_tuan from "./tools/noibat-tuan";
+import Moidang from "./tools/moidang";
+import New_list from "./tools/new_list";
 
 const HomePage = () => {
   const [user, setUser] = useState(false);
@@ -68,62 +73,11 @@ const HomePage = () => {
         <Home_catalog />
         {showLogin && "Yêu cầu đăng nhập!"}
         <div className="body-main">
-          <div className="section">
-            <h3>
-              <i className="fa-regular fa-star"></i> Hôm nay ăn gì?
-            </h3>
-            <div className="list">
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-            </div>
-          </div>
-          <div className="section">
-            <h3>
-              <i className="fa-solid fa-store"></i>Các cửa tiệm gần bạn
-            </h3>
-            <div className="grid">
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-            </div>
-          </div>
-          <div className="section">
-            <h3>
-              <i className="fa-solid fa-fire-flame-curved"></i> Nổi bật nhất
-              trong tuần
-            </h3>
-            <div className="grid">
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-            </div>
-          </div>
-          <div className="section">
-            <h3>
-              <i className="fa-solid fa-champagne-glasses"></i> Các món mới đăng
-            </h3>
-            <div className="grid">
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-            </div>
-          </div>
-          <div className="section">
-            <h3>
-              <i className="fa-solid fa-scroll"></i> Đi dạo
-            </h3>
-            <div className="grid">
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-              <div className="card"></div>
-            </div>
-          </div>
+          <Today_recommend />
+          <Nearly_restaurant />
+          <Noibat_tuan />
+          <Moidang />
+          <New_list />
         </div>
         <Navigation_bar />
         <Outlet />
