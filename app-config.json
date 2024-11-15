@@ -1,0 +1,17 @@
+{
+  "app": {
+    "title": "Nhatro_88",
+    "headerColor": "",
+    "textColor": "white",
+    "textAlign": "left",
+    "statusBarColor": "#1843EF",
+    "leftButton": "none",
+    "statusBar": "transparent",
+    "actionBarHidden": true,
+    "hideAndroidBottomNavigationBar": false,
+    "hideIOSSafeAreaBottom": false
+  },
+  "listCSS": [],
+  "listSyncJS": [],
+  "listAsyncJS": []
+}
