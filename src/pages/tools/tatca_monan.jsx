@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import api from "../../components/api";
 import empty from "../../img/empty.png";
-const Moidang = ({ user, loadItem }) => {
+
+const New_list = forwardRef(({ user, loadItem }, ref) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [error, setError] = useState(false);
-  console.log(user);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const CardLoading = () => {
     return (
@@ -19,31 +26,61 @@ const Moidang = ({ user, loadItem }) => {
       </div>
     );
   };
+
   useEffect(() => {
     const getNew = async () => {
+      setLoading(true);
       api
-        .get(`/res-new/`, user.app.access_token)
+        .get(`/res-all-items/?page=${page}&page_size=8`, user.app.access_token)
         .then((response) => {
           setLoading(false);
-          setData(response ?? []);
+          if (response.results && response.results.length > 0) {
+            setData((prevData) => [...prevData, ...response.results]);
+          } else {
+            setHasMore(false);
+          }
         })
         .catch((error) => {
-          setError("Phát sinh lỗi khi lấy dữ liệu, vui lòng thử lại sau!");
+          setLoading(false);
+          if (data.length > 0) {
+            setHasMore(false);
+          } else {
+            setError("Phát sinh lỗi khi lấy dữ liệu, vui lòng thử lại sau!");
+          }
         });
     };
+
     getNew();
-  }, []);
+  }, [page]);
+
+  useImperativeHandle(ref, () => ({
+    loadMore: () => {
+      if (!loading && hasMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    },
+  }));
+
+  const handleScroll = (event) => {
+    const bottom =
+      event.target.scrollHeight ===
+      event.target.scrollTop + event.target.clientHeight;
+    if (bottom && !loading && hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
   return (
     <div className="section">
       <h3>
-        <i className="fa-solid fa-fire-flame-curved"></i> Mới được thêm vào
+        <i className="fa-solid fa-fire-flame-curved"></i> Đi dạo
       </h3>
-      <div className="grid">
+      <div className="grid" onScroll={handleScroll}>
         {error ? (
           <div className="error">
             <p>{error}</p>
           </div>
-        ) : loading ? (
+        ) : loading && data.length === 0 ? (
           <>
             {Array.from({ length: 6 }).map((_, index) => (
               <CardLoading key={index} />
@@ -57,7 +94,7 @@ const Moidang = ({ user, loadItem }) => {
                   className="card"
                   key={index}
                   onClick={() => {
-                    loadItem(item.id); // Pass item id when clicked
+                    loadItem(item.id);
                   }}
                 >
                   <div className="image">
@@ -92,11 +129,25 @@ const Moidang = ({ user, loadItem }) => {
                 <div className="message">Menu đang trống!</div>
               </div>
             )}
+            {loading && (
+              <div className="card loading">
+                <div className="animate-pulse bg-gray-300 w-10 h-4 rounded-lg"></div>
+              </div>
+            )}
+            {!hasMore && (
+              <div className="nodata">
+                <div className="box">
+                  Hiện tại chúng tôi đang cố gắng kêu gọi thêm các quán ăn và
+                  quán cafe
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
     </div>
   );
-};
+  9;
+});
 
-export default Moidang;
+export default New_list;
