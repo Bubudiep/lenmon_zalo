@@ -141,44 +141,6 @@ const Quanan_popup = ({ onClose, id_item, token, loadItem }) => {
                     </div>
                   </div>
                   <div className="rest-layout">
-                    <div className="h3">
-                      <div className="name">Thực đơn</div>
-                    </div>
-                    <div className="tlayout">
-                      {restData?.menu &&
-                      restData?.menu.length > 0 &&
-                      restData?.menu[0].items.length > 0 ? (
-                        <div className="list-menu">
-                          {restData?.menu[0].items.map((its, inx) => (
-                            <div
-                              className="items"
-                              key={its.id}
-                              onClick={() => {
-                                loadItem(its.id);
-                              }}
-                            >
-                              <div className="image">
-                                <img src={its.image64_mini} />
-                              </div>
-                              <div className="name">{its?.name}</div>
-                              <div className="price">
-                                {its?.price &&
-                                  its?.price.toLocaleString("vi-VN") + "đ"}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="null">
-                          <div className="icon p-2">
-                            <i className="fa-solid fa-clone"></i>
-                          </div>
-                          <div className="message">Chưa có sản phẩm nào!</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="rest-layout">
                     <div className="h3">Sự kiện (0)</div>
                     <div className="layout">
                       <div className="null">
