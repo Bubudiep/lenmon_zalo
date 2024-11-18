@@ -9,6 +9,7 @@
     "statusBar": "transparent",
     "actionBarHidden": true,
     "hideAndroidBottomNavigationBar": false,
+    "androidNavigationBarColor": "transparent",
     "hideIOSSafeAreaBottom": false
   },
   "listCSS": [],

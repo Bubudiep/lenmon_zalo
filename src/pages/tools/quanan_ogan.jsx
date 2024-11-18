@@ -109,10 +109,12 @@ const Nearly_restaurant = ({ user, loadItem }) => {
               </div>
             ) : (
               <div className="null">
-                <div className="icon">
+                <div className="icon p-2">
                   <img src={empty} />
                 </div>
-                <div className="message">Menu đang trống!</div>
+                <div className="message">
+                  Không có quán nào ở gần bạn (15km)!
+                </div>
               </div>
             )}
           </>

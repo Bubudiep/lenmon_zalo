@@ -7,7 +7,7 @@ import React, {
 
 // Reusable BottomPopup component
 const BottomPopup = forwardRef(
-  ({ title, children, onClose, bar = true }, ref) => {
+  ({ title, children, onClose, bar = true, zIndex = 100 }, ref) => {
     const [isVisible, setIsVisible] = useState(false); // Visibility state for popup
     const [iscanScroll, setIscanScroll] = useState(true); // Visibility state for popup
     const [startY, setStartY] = useState(null); // Track touch start position
@@ -163,7 +163,7 @@ const BottomPopup = forwardRef(
       animationFrame = requestAnimationFrame(continueScroll);
     };
     return (
-      <div className="bg-full">
+      <div className="bg-full" style={{ zIndex: zIndex }}>
         <div
           className={`detectOut ${isVisible ? "fade-out" : "fade-in"}`}
           onClick={handleClose}

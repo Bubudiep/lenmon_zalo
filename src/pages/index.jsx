@@ -22,11 +22,12 @@ import User_info from "./popups/bottom/user";
 import Donhang from "./popups/bottom/donhang";
 import Monan_popup from "./popups/monan";
 import Quanan_popup from "./popups/quanan";
+import Order_fast from "./popups/order";
 
 const HomePage = () => {
   const [user, setUser] = useState(false);
   const [fromSearch, setFromSearch] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
+  const [isOrder, setIsOrder] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [isFadeOut, setIsFadeOut] = useState(false);
@@ -37,7 +38,13 @@ const HomePage = () => {
   const newListRef = useRef();
   const [isloadItem, setIsloadItem] = useState(false);
   const [isloadRestaurant, setIsloadRestaurant] = useState(false);
-
+  const [openItems, setOpenItems] = useState([]);
+  const openItem = (id) => {
+    if (!openItems.includes(id)) setOpenItems((prev) => [...prev, id]);
+  };
+  const closeItem = (id) => {
+    setOpenItems((prev) => prev.filter((itemId) => itemId !== id));
+  };
   const handleStart = async () => {
     setLoading(true);
     const setting = await api.getUSetting();
@@ -234,20 +241,31 @@ const HomePage = () => {
             />
           )}
           <div className="body-main">
-            <Today_recommend user={user} loadItem={setIsloadItem} />
+            <Today_recommend user={user} loadItem={openItem} />
             <Nearly_restaurant user={user} loadItem={setIsloadRestaurant} />
             {/* <Noibat_tuan /> */}
-            <Moidang user={user} loadItem={setIsloadItem} />
-            <New_list user={user} ref={newListRef} loadItem={setIsloadItem} />
+            <Moidang user={user} loadItem={openItem} />
+            <New_list user={user} ref={newListRef} loadItem={openItem} />
           </div>
           <Navigation_bar setTab={setTab} />
-          {isloadItem && (
+          {openItems.map((id_item) => (
             <Monan_popup
-              onClose={() => setIsloadItem(false)}
-              id_item={isloadItem}
+              key={id_item}
+              onClose={() => closeItem(id_item)}
+              id_item={id_item}
               loadRest={setIsloadRestaurant}
               from={fromSearch}
               token={user?.app?.access_token}
+              setIsOrder={setIsOrder}
+            />
+          ))}
+          {isOrder && (
+            <Order_fast
+              onClose={() => setIsOrder(false)}
+              id_item={isOrder}
+              from={fromSearch}
+              token={user?.app?.access_token}
+              user={user}
             />
           )}
           {isloadRestaurant && (
@@ -256,6 +274,7 @@ const HomePage = () => {
               id_item={isloadRestaurant}
               from={fromSearch}
               token={user?.app?.access_token}
+              loadItem={openItem}
             />
           )}
           {renderTabContent()}
