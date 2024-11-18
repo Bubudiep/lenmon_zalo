@@ -25,6 +25,7 @@ import Quanan_popup from "./popups/quanan";
 
 const HomePage = () => {
   const [user, setUser] = useState(false);
+  const [fromSearch, setFromSearch] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -173,16 +174,36 @@ const HomePage = () => {
   const renderTabContent = () => {
     switch (currentTab) {
       case "alert":
-        return <Thongbao onClose={() => setCurrentTab(false)} />;
+        return (
+          <Thongbao
+            token={user?.app?.access_token}
+            onClose={() => setCurrentTab(false)}
+          />
+        );
         break;
       case "cart":
-        return <Giohang onClose={() => setCurrentTab(false)} />;
+        return (
+          <Giohang
+            token={user?.app?.access_token}
+            onClose={() => setCurrentTab(false)}
+          />
+        );
         break;
       case "user":
-        return <User_info onClose={() => setCurrentTab(false)} />;
+        return (
+          <User_info
+            token={user?.app?.access_token}
+            onClose={() => setCurrentTab(false)}
+          />
+        );
         break;
       case "checkout":
-        return <Donhang onClose={() => setCurrentTab(false)} />;
+        return (
+          <Donhang
+            token={user?.app?.access_token}
+            onClose={() => setCurrentTab(false)}
+          />
+        );
         break;
       default:
         return false;
@@ -198,7 +219,7 @@ const HomePage = () => {
           <div className="loading-spinner" />
         </div>
       )}
-      {isShow && user?.location && (
+      {isShow && (
         <div className="app-container" onScroll={handleScroll}>
           <Topcontainer />
           <User_wellcome user={user} setShowLogin={setShowLogin} />
@@ -224,14 +245,17 @@ const HomePage = () => {
             <Monan_popup
               onClose={() => setIsloadItem(false)}
               id_item={isloadItem}
-              token={user.app.access_token}
+              loadRest={setIsloadRestaurant}
+              from={fromSearch}
+              token={user?.app?.access_token}
             />
           )}
           {isloadRestaurant && (
             <Quanan_popup
               onClose={() => setIsloadRestaurant(false)}
               id_item={isloadRestaurant}
-              token={user.app.access_token}
+              from={fromSearch}
+              token={user?.app?.access_token}
             />
           )}
           {renderTabContent()}

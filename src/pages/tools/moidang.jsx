@@ -22,7 +22,7 @@ const Moidang = ({ user, loadItem }) => {
   useEffect(() => {
     const getNew = async () => {
       api
-        .get(`/res-new/`, user.app.access_token)
+        .get(`/res-new/`, user?.app?.access_token)
         .then((response) => {
           setLoading(false);
           setData(response ?? []);

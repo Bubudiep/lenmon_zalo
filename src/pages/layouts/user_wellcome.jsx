@@ -11,7 +11,10 @@ const User_wellcome = ({ user, setShowLogin }) => {
         </div>
         <div className="user-info">
           <div className="name">
-            Xin chào, <div className="user">{user?.zalo?.name}</div>
+            Xin chào,{" "}
+            <div className="user">
+              {user?.zalo?.name ?? "Khách hàng ẩn danh"}
+            </div>
           </div>
           {user?.app?.access_token ? (
             <div className="address">

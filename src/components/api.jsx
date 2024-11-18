@@ -8,8 +8,8 @@ import {
 } from "zmp-sdk/apis";
 
 const api = axios.create({
-  // baseURL: "http://localhost:5005/api", // URL cơ sở cho các yêu cầu
-  baseURL: "https://ipays.vn/api", // URL cơ sở cho các yêu cầu
+  baseURL: "http://localhost:5005/api", // URL cơ sở cho các yêu cầu
+  // baseURL: "https://ipays.vn/api", // URL cơ sở cho các yêu cầu
 });
 
 // Thêm request interceptor để ghi lại thời gian bắt đầu
@@ -120,7 +120,6 @@ const random = (length) => {
   }
   return result;
 };
-const app_key = import.meta.env.VITE_ZALO_KEY;
 const getToken = () => {
   return new Promise((resolve, reject) => {
     getAccessToken({
@@ -147,6 +146,7 @@ const getUSetting = () => {
   });
 };
 const getPhone = async () => {
+  const app_key = import.meta.env.VITE_ZALO_KEY;
   const access_token = await getToken();
   console.log("access token", access_token);
   return new Promise((resolve, reject) => {
@@ -205,6 +205,7 @@ const getAddress = async (latitude, longitude) => {
 };
 const getUserpos = async () => {
   const access_token = await getToken();
+  const app_key = import.meta.env.VITE_ZALO_KEY;
   return new Promise((resolve, reject) => {
     getLocation({
       success: async (data) => {
@@ -215,7 +216,8 @@ const getUserpos = async () => {
             code: token,
             secret_key: app_key,
           });
-          if (response.data.latitude && response.data.longitude) {
+          console.log(response);
+          if (response?.data?.latitude && response?.data?.longitude) {
             const address = await getAddress(
               response.data.latitude,
               response.data.longitude

@@ -31,7 +31,10 @@ const New_list = forwardRef(({ user, loadItem }, ref) => {
     const getNew = async () => {
       setLoading(true);
       api
-        .get(`/res-all-items/?page=${page}&page_size=8`, user.app.access_token)
+        .get(
+          `/res-all-items/?page=${page}&page_size=8`,
+          user?.app?.access_token
+        )
         .then((response) => {
           setLoading(false);
           if (response.results && response.results.length > 0) {

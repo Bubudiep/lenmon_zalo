@@ -14,6 +14,8 @@ const BottomPopup = forwardRef(
     const [bottomPos, setBottomPos] = useState(0); // Bottom position for the popup
     const [velocity, setVelocity] = useState(0); // Scroll velocity
     const isTouchingRef = useRef(false); // Touch state
+    const bodyRef = useRef(false);
+    const boxRef = useRef(false);
     let animationFrame;
 
     useImperativeHandle(ref, () => ({
@@ -70,7 +72,7 @@ const BottomPopup = forwardRef(
                 stopScroll(); // Stop animation if velocity is small
               }
 
-              const bottomBox = document.querySelector(".box-main-body");
+              const bottomBox = boxRef.current;
               const bottomBoxHeight = bottomBox?.offsetHeight || 0;
               const computedStyle = window.getComputedStyle(bottomBox);
               const bottomCssValue = parseFloat(computedStyle.bottom) || 0;
@@ -97,7 +99,7 @@ const BottomPopup = forwardRef(
       setIscanScroll(e);
     };
     const handleTouchStart2 = (e) => {
-      const scollDiv = document.querySelector(".popup-body-container");
+      const scollDiv = bodyRef.current;
       if (scollDiv.scrollTop == 0 && iscanScroll) {
         setStartY(e.touches[0].clientY);
         isTouchingRef.current = true; // Mark that touch is ongoing
@@ -129,6 +131,7 @@ const BottomPopup = forwardRef(
         }
       };
       const continueScroll = () => {
+        const bottomBox = bodyRef.current;
         if (!isTouchingRef.current && Math.abs(velocity) > 0.1) {
           setVelocity((prevVelocity) => {
             const newVelocity = prevVelocity * 0.95; // Slow down the velocity
@@ -138,12 +141,10 @@ const BottomPopup = forwardRef(
               if (Math.abs(newVelocity) <= 0.1) {
                 stopScroll(); // Stop animation if velocity is small
               }
-
-              const bottomBox = document.querySelector(".box-main-body");
               const bottomBoxHeight = bottomBox?.offsetHeight || 0;
-              const computedStyle = window.getComputedStyle(bottomBox);
+              const computedStyle = boxRef.current.style;
               const bottomCssValue = parseFloat(computedStyle.bottom) || 0;
-              console.log(bottomBoxHeight / 3, bottomCssValue * -1);
+              console.log(bottomBoxHeight, bottomCssValue * -1);
               const increment = 4; // Scroll increment
               if (bottomBoxHeight - bottomCssValue * -1 <= 200) {
                 handleClose();
@@ -171,6 +172,7 @@ const BottomPopup = forwardRef(
           onTouchEnd={handleTouchEnd}
         ></div>
         <div
+          ref={boxRef}
           className={`box-main-body ${isVisible ? "slideOut" : "slideIn"}`}
           style={{ bottom: `${bottomPos}px` }}
           onTouchStart={handleTouchStart2}
@@ -190,7 +192,7 @@ const BottomPopup = forwardRef(
             )}
             {title && <div className="title">{title}</div>}
           </div>
-          <div className="popup-body-container">
+          <div className="popup-body-container" ref={bodyRef}>
             <div className="content-box">{children}</div>
           </div>
         </div>

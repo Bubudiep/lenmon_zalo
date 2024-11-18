@@ -29,7 +29,7 @@ const Today_recommend = ({ user, loadItem }) => {
   const getRecommendations = async () => {
     setLoading(true); // Ensure loading state is true before fetch
     try {
-      const response = await api.get(`/recomend/`, user.app.access_token);
+      const response = await api.get(`/recomend/`, user?.app?.access_token);
       setData(response?.popular_items ?? []);
     } catch (err) {
       setError("Phát sinh lỗi khi lấy dữ liệu, vui lòng thử lại sau!");
@@ -39,9 +39,7 @@ const Today_recommend = ({ user, loadItem }) => {
   };
 
   useEffect(() => {
-    if (user?.app?.access_token) {
-      getRecommendations(); // Fetch data when the component mounts
-    }
+    getRecommendations();
   }, [user]); // Re-run if user changes
 
   return (
@@ -58,9 +56,11 @@ const Today_recommend = ({ user, loadItem }) => {
       ) : loading ? (
         // Display skeleton loading cards
         <>
-          {Array.from({ length: 6 }).map((_, index) => (
-            <CardLoading key={index} />
-          ))}
+          <div className="list-2">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <CardLoading key={index} />
+            ))}
+          </div>
         </>
       ) : (
         // Recommendations list

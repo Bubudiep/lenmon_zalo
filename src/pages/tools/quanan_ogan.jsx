@@ -26,8 +26,10 @@ const Nearly_restaurant = ({ user, loadItem }) => {
     const getNear = async () => {
       api
         .get(
-          `/res-nearly/?latitude=${user?.location?.lat}&longitude=${user?.location?.long}`,
-          user.app.access_token
+          `/res-nearly/?${
+            user?.location?.lat ? `latitude=${user?.location?.lat}` : ""
+          }${user?.location?.long ? `&longitude=${user?.location?.long}` : ""}`,
+          user?.app?.access_token
         )
         .then((response) => {
           console.log("Near data", response);
@@ -59,9 +61,11 @@ const Nearly_restaurant = ({ user, loadItem }) => {
           </div>
         ) : loading ? (
           <>
-            {Array.from({ length: 4 }).map((_, index) => (
-              <CardLoading key={index} />
-            ))}
+            <div className="block">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <CardLoading key={index} />
+              ))}
+            </div>
           </>
         ) : (
           <>
@@ -87,7 +91,9 @@ const Nearly_restaurant = ({ user, loadItem }) => {
                         {rest?.description_mini ?? "Chưa có mô tả"}
                       </div>
                       <div className="nearly">
-                        <div className="item">Cách {rest?.distance_km}km</div>
+                        {rest?.distance_km != null && (
+                          <div className="item">Cách {rest?.distance_km}km</div>
+                        )}
                         <div className="item">
                           <i className="fa-solid fa-star"></i>
                           {rest?.total_rate ?? "Chưa có đánh giá"}
