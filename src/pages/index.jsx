@@ -257,6 +257,7 @@ const HomePage = () => {
               from={fromSearch}
               token={user?.app?.access_token}
               setIsOrder={setIsOrder}
+              setFromSearch={setFromSearch}
             />
           ))}
           {isOrder && (
@@ -266,6 +267,7 @@ const HomePage = () => {
               from={fromSearch}
               token={user?.app?.access_token}
               user={user}
+              setFromSearch={setFromSearch}
             />
           )}
           {isloadRestaurant && (
@@ -275,6 +277,7 @@ const HomePage = () => {
               from={fromSearch}
               token={user?.app?.access_token}
               loadItem={openItem}
+              setFromSearch={setFromSearch}
             />
           )}
           {renderTabContent()}

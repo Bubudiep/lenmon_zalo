@@ -172,6 +172,17 @@ const getPhone = async () => {
   });
 };
 const getAddress = async (latitude, longitude) => {
+  if (!latitude && !longitude) {
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      });
+    });
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+  }
   const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`;
   const headers = {
     "Content-Type": "application/json",
@@ -236,6 +247,25 @@ const getUserpos = async () => {
     });
   });
 };
+function timeSinceOrder(createdAt) {
+  const orderDate = new Date(createdAt); // Convert order.created_at to a Date object
+  const now = new Date(); // Get the current time
+  const diffMs = now - orderDate; // Difference in milliseconds
+
+  const diffMinutes = Math.floor(diffMs / (1000 * 60)); // Difference in minutes
+
+  if (diffMinutes < 60) {
+    return `${diffMinutes} phút trước`;
+  }
+
+  const diffHours = Math.floor(diffMinutes / 60); // Difference in hours
+  if (diffHours < 24) {
+    return `${diffHours} giờ trước`;
+  }
+
+  const diffDays = Math.floor(diffHours / 24); // Difference in days
+  return `${diffDays} ngày trước`;
+}
 const login = async (debug = true) => {
   try {
     // Step 1: Get user info
@@ -299,6 +329,7 @@ export default {
   getAddress,
   getUserpos,
   getUSetting,
+  timeSinceOrder,
   delete: deleteRequest,
   random: random,
 };
