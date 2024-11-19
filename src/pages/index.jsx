@@ -256,7 +256,10 @@ const HomePage = () => {
               loadRest={setIsloadRestaurant}
               from={fromSearch}
               token={user?.app?.access_token}
-              setIsOrder={setIsOrder}
+              setIsOrder={(e) => {
+                setIsOrder(e);
+                closeItem(id_item);
+              }}
               setFromSearch={setFromSearch}
             />
           ))}
@@ -268,6 +271,10 @@ const HomePage = () => {
               token={user?.app?.access_token}
               user={user}
               setFromSearch={setFromSearch}
+              openCart={() => {
+                setIsOrder(false);
+                setCurrentTab("checkout");
+              }}
             />
           )}
           {isloadRestaurant && (

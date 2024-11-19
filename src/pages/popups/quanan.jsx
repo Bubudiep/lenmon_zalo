@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import BottomPopup from "../popup";
 import api from "../../components/api";
 import table from "../../img/table.png";
+import { useNavigate } from "react-router-dom";
 
 const Quanan_popup = ({
   onClose,
@@ -19,6 +20,7 @@ const Quanan_popup = ({
   const [totalLike, settotalLike] = useState(0);
   const [isFollow, setIsfollow] = useState(false);
   const [totalFollow, settotalFollow] = useState(0);
+  const navigate = useNavigate();
   const closeFast = () => {
     popupRef.current.closePopup();
   };
@@ -96,11 +98,19 @@ const Quanan_popup = ({
         setIsfollow(response.data);
       });
   };
+  const handleRes = () => {
+    if (id_item && token) {
+      navigate(`/quan-an?id=${id_item}`, {
+        state: { id: id_item, token: token },
+      });
+    } else {
+      console.error("id_item or token is undefined!");
+    }
+  };
   return (
     <>
       {loading && (
         <div className="bg-full center load-top">
-          <div className={`detectOut ${outloading ? "fade-out" : "fade-in"}`} />
           <div
             className={`loading-spinner ${outloading ? "fade-out" : "fade-in"}`}
           ></div>
@@ -262,7 +272,9 @@ const Quanan_popup = ({
                   </div>
                 </div>
                 <div className="tools pr-2">
-                  <button className="access">Vào trang của quán</button>
+                  <button className="access" onClick={handleRes}>
+                    Vào trang của quán
+                  </button>
                 </div>
               </div>
             </div>

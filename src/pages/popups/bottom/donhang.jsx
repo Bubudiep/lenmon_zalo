@@ -33,7 +33,6 @@ const Donhang = ({ onClose, token }) => {
     <>
       {load && (
         <div className="bg-full center load-top">
-          <div className={`detectOut ${outloading ? "fade-out" : "fade-in"}`} />
           <div
             className={`loading-spinner ${outloading ? "fade-out" : "fade-in"}`}
           ></div>

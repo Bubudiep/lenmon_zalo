@@ -3,7 +3,7 @@ import BottomPopup from "../popup";
 import api from "../../components/api";
 import order_success from "../../img/order_sucess.png";
 
-const Order_fast = ({ token, id_item, onClose, from, user }) => {
+const Order_fast = ({ token, id_item, onClose, from, user, openCart }) => {
   console.log(id_item, user);
   const [itemQTY, setItemQTY] = useState(parseInt(id_item.qty));
   const [notes, setNotes] = useState("");
@@ -84,63 +84,70 @@ const Order_fast = ({ token, id_item, onClose, from, user }) => {
         ) : (
           <>
             {oderSuccess ? (
-              <div className="order-success slideIn_mini">
-                <div className="icon">
-                  <img src={order_success} />
-                </div>
-                <div className="message">Đặt hàng thành công!</div>
-                <div className="hint">
-                  <div className="box">
-                    Đơn hàng của bạn đã được chuyển đến mục Đơn hàng để tiện
-                    theo dõi và kiểm tra tình trạng!
+              <>
+                <div className="order-success slideIn_mini">
+                  <div className="icon">
+                    <img src={order_success} />
                   </div>
-                </div>
-                <div className="h3">Chi tiết đơn hàng</div>
-                <div className="order-detail">
-                  <div className="box">
-                    <div className="info">
-                      <div className="items">
-                        <div className="name">Mã đơn hàng</div>
-                        <div className="value">
-                          #DH-{oderSuccess.data.OrderKey.slice(0, 7)}...
-                          {oderSuccess.data.OrderKey.slice(-3)}
+                  <div className="message">Đặt hàng thành công!</div>
+                  <div className="hint">
+                    <div className="box">
+                      Đơn hàng của bạn đã được chuyển đến mục Đơn hàng để tiện
+                      theo dõi và kiểm tra tình trạng!
+                    </div>
+                  </div>
+                  <div className="h3">Chi tiết đơn hàng</div>
+                  <div className="order-detail">
+                    <div className="box">
+                      <div className="info">
+                        <div className="items">
+                          <div className="name">Mã đơn hàng</div>
+                          <div className="value">
+                            #DH-{oderSuccess.data.OrderKey.slice(0, 7)}...
+                            {oderSuccess.data.OrderKey.slice(-3)}
+                          </div>
                         </div>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th></th>
+                              <th>Sản phẩm</th>
+                              <th>SL</th>
+                              <th>Giá</th>
+                              <th>Thành tiền</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <div className="icon">
+                                  <img src={id_item.data.image64_mini} />
+                                </div>
+                              </td>
+                              <td>{id_item.data.name}</td>
+                              <td className="font-medium">{itemQTY}</td>
+                              <td className="price">
+                                {id_item.data.price.toLocaleString("vi-VN")}đ
+                              </td>
+                              <td className="price">
+                                {(itemQTY * id_item.data.price).toLocaleString(
+                                  "vi-VN"
+                                )}
+                                đ
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th>Sản phẩm</th>
-                            <th>SL</th>
-                            <th>Giá</th>
-                            <th>Thành tiền</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>
-                              <div className="icon">
-                                <img src={id_item.data.image64_mini} />
-                              </div>
-                            </td>
-                            <td>{id_item.data.name}</td>
-                            <td className="font-medium">{itemQTY}</td>
-                            <td className="price">
-                              {id_item.data.price.toLocaleString("vi-VN")}đ
-                            </td>
-                            <td className="price">
-                              {(itemQTY * id_item.data.price).toLocaleString(
-                                "vi-VN"
-                              )}
-                              đ
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
                     </div>
                   </div>
                 </div>
-              </div>
+                <div className="bottom-tools">
+                  <button onClick={openCart}>
+                    Xem danh sách đơn hàng<i className="fa-solid fa-copy"></i>
+                  </button>
+                </div>
+              </>
             ) : (
               <div className="order-container">
                 <div className="p-2 pb-[68px]">

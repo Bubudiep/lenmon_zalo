@@ -5,6 +5,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { RecoilRoot } from "recoil";
 import HomePage from "../pages";
 import QR_login from "../pages/qr_login";
+import Restaurant from "../pages/restaurant";
 
 const MyApp = () => {
   return (
@@ -14,6 +15,7 @@ const MyApp = () => {
           <ZMPRouter>
             <Routes>
               <Route path="/" element={<HomePage />}></Route>
+              <Route path="/quan-an" element={<Restaurant />} />
               <Route path="/qr_login" element={<QR_login></QR_login>}></Route>
             </Routes>
           </ZMPRouter>
