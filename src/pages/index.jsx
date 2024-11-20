@@ -258,7 +258,9 @@ const HomePage = () => {
               key={id_item}
               onClose={() => closeItem(id_item)}
               id_item={id_item}
-              loadRest={setIsloadRestaurant}
+              loadRest={(e) => {
+                setIsloadRestaurant(e);
+              }}
               from={fromSearch}
               token={user?.app?.access_token}
               setIsOrder={(e) => {
@@ -277,7 +279,6 @@ const HomePage = () => {
               user={user}
               setFromSearch={setFromSearch}
               openCart={() => {
-                setIsOrder(false);
                 setCurrentTab("checkout");
               }}
             />

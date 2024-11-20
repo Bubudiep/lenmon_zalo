@@ -4,6 +4,7 @@ import logo from "../img/logo.png";
 import { useLocation } from "react-router-dom";
 import LoginPopup from "./layouts/login-popup";
 import Restaurant_layout from "./restaurants/res-layout";
+import Restaurant_menu from "./restaurants/res-menu";
 
 const Restaurant = () => {
   const [user, setUser] = useState(false);
@@ -68,16 +69,27 @@ const Restaurant = () => {
       {isShow && restData && (
         <div className="restaurant-landing">
           {/* Thông tin cơ bản */}
-          <div className="top-container">
+          <div
+            className="top-container"
+            style={{
+              backgroundImage: 'url("' + restData?.wallpaper + '")',
+              backgroundSize: "cover", // Tùy chọn, giúp ảnh phủ kín
+              backgroundPosition: "center", // Tùy chọn, căn chỉnh vị trí
+              backgroundRepeat: "no-repeat", // Tùy chọn, tránh lặp lại ảnh
+            }}
+          >
             <div className="top">
               <div className="avatar">
-                <div className="box">
+                <div className="img">
                   <img src={restData.avatar || logo} alt="Restaurant Avatar" />
                 </div>
               </div>
               <div className="info">
                 <div className="name">{restData.name}</div>
-                <div className="name">{restData.mohinh}</div>
+                <div className="mohinh">
+                  <div className="items">{restData.phone_number}</div>
+                  <div className="items">{restData.mohinh}</div>
+                </div>
                 <div className="address">{restData.address}</div>
               </div>
             </div>
@@ -133,11 +145,8 @@ const Restaurant = () => {
               {tabActive === "layouts" && restData.layouts && (
                 <Restaurant_layout restData={restData} />
               )}
-
-              {tabActive === "menus" && (
-                <div className="menu-content">
-                  <p>Hiển thị menu tại đây...</p>
-                </div>
+              {tabActive === "menus" && restData.menu && (
+                <Restaurant_menu restData={restData} />
               )}
             </div>
           </div>
