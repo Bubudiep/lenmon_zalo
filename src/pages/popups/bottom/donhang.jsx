@@ -77,8 +77,8 @@ const Donhang = ({ onClose, token }) => {
                             {oder.items.slice(0, 3).map((item, idx) => (
                               <tr key={idx}>
                                 <td>{item.name}</td>
-                                <td>*{item.quantity}</td>
-                                <td>{item.price.toLocaleString("vi-VN")}đ</td>
+                                <td>SL: {item.quantity}</td>
+                                <td>{item.price.toLocaleString("vi-VN")}đ/1</td>
                                 <td>
                                   {(item.quantity * item.price).toLocaleString(
                                     "vi-VN"

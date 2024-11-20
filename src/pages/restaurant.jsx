@@ -1,114 +1,78 @@
 import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import logo from "../img/logo.png";
-import table from "../img/table.png";
 import { useLocation } from "react-router-dom";
-import Login_popup from "./layouts/login-popup";
+import LoginPopup from "./layouts/login-popup";
+import Restaurant_layout from "./restaurants/res-layout";
 
 const Restaurant = () => {
   const [user, setUser] = useState(false);
   const [tabActive, setTabActive] = useState("layouts");
   const [loading, setLoading] = useState(false);
   const [isShow, setIsShow] = useState(false);
-  const [isFadeOut, setIsFadeOut] = useState(false);
-  const [from, setFrom] = useState(false);
-  const [restData, setRestData] = useState(false);
+  const [restData, setRestData] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const location = useLocation();
   const { id, token } = location.state || {};
-  // Hàm lấy id từ query string
+
+  // Lấy id từ query string
   const getIdFromQuery = () => {
     const params = new URLSearchParams(location.search);
     return params.get("id");
   };
-  useEffect(() => {
+
+  // Xử lý fetch dữ liệu từ API
+  const fetchRestaurantData = async (restaurantId, accessToken) => {
     setLoading(true);
-    if (id && token) {
-      api
-        .get(`/restaurant-view/${id}/?from=${from}`, token)
-        .then((response) => {
-          console.log(response);
-          setRestData(response);
-        })
-        .catch((e) => {
-          console.log(e);
-        })
-        .finally(() => {
-          setTimeout(() => {
-            setIsFadeOut(true);
-            setTimeout(() => {
-              setIsShow(true);
-            }, 100); // Đợi thêm 0.5s trước khi đặt setIsloading(false)
-            setTimeout(() => {
-              setLoading(false);
-            }, 600); // Đợi thêm 0.5s trước khi đặt setIsloading(false)
-          }, 500); // Đợi 0.5s trước khi đặt setIsFadeOut(true)
-        });
-    } else {
-      const idFromQuery = getIdFromQuery();
-      if (idFromQuery && user) {
-        api
-          .get(
-            `/restaurant-view/${idFromQuery}/?from=${from}`,
-            user?.app?.access_token
-          )
-          .then((response) => {
-            console.log(response);
-            setRestData(response);
-          })
-          .catch((e) => {
-            console.log(e);
-          })
-          .finally(() => {
-            setTimeout(() => {
-              setIsFadeOut(true);
-              setTimeout(() => {
-                setIsShow(true);
-              }, 100); // Đợi thêm 0.5s trước khi đặt setIsloading(false)
-              setTimeout(() => {
-                setLoading(false);
-              }, 600); // Đợi thêm 0.5s trước khi đặt setIsloading(false)
-            }, 500); // Đợi 0.5s trước khi đặt setIsFadeOut(true)
-          });
-      } else {
-        setTimeout(() => {
-          setIsFadeOut(true);
-          setTimeout(() => {
-            setIsShow(true);
-          }, 100); // Đợi thêm 0.5s trước khi đặt setIsloading(false)
-          setTimeout(() => {
-            setLoading(false);
-          }, 600); // Đợi thêm 0.5s trước khi đặt setIsloading(false)
-        }, 500); // Đợi 0.5s trước khi đặt setIsFadeOut(true)
-        setShowLogin(true);
-      }
+    try {
+      const response = await api.get(
+        `/restaurant-view/${restaurantId}/?from=false`,
+        accessToken
+      );
+      setRestData(response);
+    } catch (error) {
+      console.error("Error fetching restaurant data:", error);
+    } finally {
+      setLoading(false);
+      setTimeout(() => setIsShow(true), 500); // Thêm hiệu ứng hiển thị
     }
-  }, [user]);
+  };
+
+  useEffect(() => {
+    const restaurantId = id || getIdFromQuery();
+    const accessToken = token || user?.app?.access_token;
+
+    if (restaurantId && accessToken) {
+      fetchRestaurantData(restaurantId, accessToken);
+    } else {
+      setShowLogin(true);
+      setLoading(false);
+    }
+  }, [id, token, user]);
+
   return (
     <>
       {loading && (
-        <div className={`full-load ${isFadeOut ? "fadeOut" : ""}`}>
+        <div className={`full-load ${isShow ? "fadeOut" : ""}`}>
           <div className="logo">
-            <img src={logo} />
+            <img src={logo} alt="Logo" />
           </div>
           <div className="loading-spinner" />
         </div>
       )}
+
       {showLogin && (
-        <Login_popup
-          onClose={() => {
-            setShowLogin(false);
-          }}
-          setUser={setUser}
-        />
+        <LoginPopup onClose={() => setShowLogin(false)} setUser={setUser} />
       )}
+
       {isShow && restData && (
         <div className="restaurant-landing">
+          {/* Thông tin cơ bản */}
           <div className="top-container">
             <div className="top">
               <div className="avatar">
                 <div className="box">
-                  <img src={restData.avatar} />
+                  <img src={restData.avatar || logo} alt="Restaurant Avatar" />
                 </div>
               </div>
               <div className="info">
@@ -124,7 +88,9 @@ const Restaurant = () => {
               </div>
               <div className="items">
                 <div className="icon">
-                  {restData?.menu?.length > 0 && restData?.menu[0].items.length}
+                  {restData?.menu?.length > 0
+                    ? restData.menu[0].items.length
+                    : 0}
                 </div>
                 <div className="value">Sản phẩm</div>
               </div>
@@ -138,54 +104,39 @@ const Restaurant = () => {
               </div>
             </div>
           </div>
+
+          {/* Tabs */}
           <div className="body-container">
             <div className="tabs">
-              <div className="items" onClick={() => setTabActive("layouts")}>
+              <div className="items">
                 <div
-                  className={`button ${tabActive == "layouts" && "active"}`}
+                  className={`button ${
+                    tabActive === "layouts" ? "active" : ""
+                  }`}
                   onClick={() => setTabActive("layouts")}
                 >
                   Tình trạng
                 </div>
               </div>
-              <div className="items" onClick={() => setTabActive("menus")}>
+              <div className="items">
                 <div
-                  className={`button ${tabActive == "menus" && "active"}`}
+                  className={`button ${tabActive === "menus" ? "active" : ""}`}
                   onClick={() => setTabActive("menus")}
                 >
                   Thực đơn
                 </div>
               </div>
             </div>
+
+            {/* Nội dung tab */}
             <div className="rest-details">
-              {tabActive == "layouts" && (
-                <div className="rest-layout">
-                  <div className="p-layout">
-                    {restData?.layouts?.map((layout) => (
-                      <div key={layout.id} className="layout">
-                        {layout.groups.map((group) => (
-                          <div key={group.id} className="room">
-                            <div className="room-name">
-                              <div className="name">{group.name}</div>
-                            </div>
-                            <div className="room-layout">
-                              {group.spaces.map((space) => (
-                                <div key={space.id} className="table">
-                                  <div className="status">
-                                    {space.is_ordering ? "Đã đặt" : "Trống"}
-                                  </div>
-                                  <div className="icon">
-                                    <img src={table} alt="Table Icon" />
-                                  </div>
-                                  <div className="name">{space.name}</div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
+              {tabActive === "layouts" && restData.layouts && (
+                <Restaurant_layout restData={restData} />
+              )}
+
+              {tabActive === "menus" && (
+                <div className="menu-content">
+                  <p>Hiển thị menu tại đây...</p>
                 </div>
               )}
             </div>

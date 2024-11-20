@@ -166,8 +166,13 @@ const HomePage = () => {
   };
   const handleScroll = (event) => {
     const bottom =
-      event.target.scrollHeight ===
-      event.target.scrollTop + event.target.clientHeight;
+      event.target.scrollHeight >
+      event.target.scrollTop + event.target.clientHeight - 10;
+    console.log(
+      event.target.scrollHeight,
+      event.target.scrollTop,
+      event.target.clientHeight
+    );
     if (bottom && !loading) {
       console.log("Đáy xã hội");
       handleLoadMore();
