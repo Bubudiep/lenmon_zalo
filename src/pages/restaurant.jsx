@@ -80,7 +80,7 @@ const Restaurant = () => {
       {showLogin && (
         <LoginPopup onClose={() => setShowLogin(false)} setUser={setUser} />
       )}
-      {isShow && restData && (
+      {isShow && restData && token && (
         <>
           <div className="restaurant-landing">
             <Restaurant_pupup itemQTY={itemQTY} showCart={setShowCart} />
@@ -88,6 +88,7 @@ const Restaurant = () => {
               <Restaurant_cart
                 itemQTY={itemQTY}
                 restData={restData}
+                token={token}
                 onClose={() => {
                   setShowCart(false);
                 }}

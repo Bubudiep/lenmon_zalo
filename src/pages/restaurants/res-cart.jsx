@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import BottomPopup from "../popup";
+import api from "../../components/api";
 
-const Restaurant_cart = ({ onClose, itemQTY, restData }) => {
+const Restaurant_cart = ({ onClose, itemQTY, restData, token }) => {
   const popupRef = useRef();
   const [option, setOption] = useState(1);
   // State to manage item quantities
@@ -64,6 +65,31 @@ const Restaurant_cart = ({ onClose, itemQTY, restData }) => {
       }),
     };
     console.log("Đặt hàng:", orderData);
+    api
+      .post(
+        `/oder-fast/`,
+        {
+          takeaway: option == 1,
+          coupon: null,
+          notes: "notes",
+          items: orderDetails,
+          restaurant: restData.id,
+          option, // 1: Mang về, 2: Chọn bàn
+          ...(option == 2 && {
+            groupId: selectedGroupId,
+            spaceId: selectedSpaceId,
+          }),
+        },
+        token
+      )
+      .then((res) => {
+        console.log(res);
+        setoderSuccess(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {});
   };
   return (
     <BottomPopup ref={popupRef} title="Giỏ hàng" onClose={onClose}>
