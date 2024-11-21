@@ -2,9 +2,17 @@ import React, { useState, useRef } from "react";
 import BottomPopup from "../popup";
 import api from "../../components/api";
 
-const Restaurant_cart = ({ onClose, itemQTY, restData, token }) => {
+const Restaurant_cart = ({
+  onClose,
+  itemQTY,
+  restData,
+  token,
+  setoderSuccess,
+}) => {
   const popupRef = useRef();
   const [option, setOption] = useState(1);
+  const [notes, setNotes] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   // State to manage item quantities
   const [quantities, setQuantities] = useState(
     itemQTY.reduce((acc, item) => {
@@ -71,7 +79,7 @@ const Restaurant_cart = ({ onClose, itemQTY, restData, token }) => {
         {
           takeaway: option == 1,
           coupon: null,
-          notes: "notes",
+          notes: notes,
           items: orderDetails,
           restaurant: restData.id,
           option, // 1: Mang về, 2: Chọn bàn
@@ -85,15 +93,47 @@ const Restaurant_cart = ({ onClose, itemQTY, restData, token }) => {
       .then((res) => {
         console.log(res);
         setoderSuccess(res);
+        setIsSuccess(true);
       })
       .catch((err) => {
         console.log(err);
       })
       .finally(() => {});
   };
+  const closeFast = () => {
+    popupRef.current.closePopup();
+  };
   return (
-    <BottomPopup ref={popupRef} title="Giỏ hàng" onClose={onClose}>
-      {itemQTY.length > 0 ? (
+    <BottomPopup
+      ref={popupRef}
+      title="Giỏ hàng"
+      onClose={() => {
+        onClose();
+        setIsSuccess(false);
+      }}
+    >
+      {isSuccess ? (
+        <>
+          <div className="success">
+            <div className="icon">
+              <i className="fa-solid fa-circle-check"></i>
+            </div>
+            <div className="message">
+              Đặt hàng thành công! vui lòng kiểm tra Đơn hàng của bạn trong mục
+              <a>Đơn của tôi</a>
+            </div>
+            <div
+              className="button"
+              onClick={() => {
+                closeFast();
+                setIsSuccess(false);
+              }}
+            >
+              Xác nhận
+            </div>
+          </div>
+        </>
+      ) : itemQTY.length > 0 ? (
         <div className="list-order-items">
           <div className="list-items">
             {itemQTY.map((item) => (
@@ -140,54 +180,81 @@ const Restaurant_cart = ({ onClose, itemQTY, restData, token }) => {
             ))}
           </div>
           <div className="details_items-tools">
-            <div className="left">
-              <div className="order-option">
-                <select
-                  value={option}
+            <div className="order-details">
+              <div className="notes">
+                <div className="text">Ghi chú</div>
+                <input
+                  type="text"
+                  placeholder="Nhập ghi chú..."
+                  value={notes}
                   onChange={(e) => {
-                    setOption(e.target.value);
+                    setNotes(e.target.value);
                   }}
-                >
-                  <option value={1}>Mang về</option>
-                  <option value={2}>Chọn bàn</option>
-                </select>
-                {option == 2 && (
-                  <>
-                    <select
-                      value={selectedGroupId}
-                      onChange={handleGroupChange}
-                    >
-                      {allGroups.map((group) => (
-                        <option key={group.id} value={group.id}>
-                          {group.name}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={selectedSpaceId || ""}
-                      onChange={handleSpaceChange}
-                      disabled={!spaces.length}
-                    >
-                      {spaces.length > 0 ? (
-                        spaces.map((space) => (
-                          <option key={space.id} value={space.id}>
-                            {space.name}
-                          </option>
-                        ))
-                      ) : (
-                        <option value="" disabled>
-                          Không có Space
-                        </option>
-                      )}
-                    </select>
-                  </>
-                )}
+                />
               </div>
             </div>
-            <div className="tools">
-              <div className="shop-it" onClick={handleOrderSubmit}>
-                <i className="fa-solid fa-cart-plus"></i>
-                Đặt hàng
+            <div className="order-details">
+              <div className="count">Số lượng: {itemQTY.length}</div>
+              <div className="total-price">
+                {itemQTY
+                  .reduce((sum, item) => {
+                    const quantity = quantities[item.id] || 0;
+                    return sum + item.price * quantity;
+                  }, 0)
+                  .toLocaleString("vi-VN")}
+                đ
+              </div>
+            </div>
+            <div className="optional-order">
+              <div className="left">
+                <div className="order-option">
+                  <select
+                    value={option}
+                    onChange={(e) => {
+                      setOption(e.target.value);
+                    }}
+                  >
+                    <option value={1}>Mang về</option>
+                    <option value={2}>Chọn bàn</option>
+                  </select>
+                  {option == 2 && (
+                    <>
+                      <select
+                        value={selectedGroupId}
+                        onChange={handleGroupChange}
+                      >
+                        {allGroups.map((group) => (
+                          <option key={group.id} value={group.id}>
+                            {group.name}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        value={selectedSpaceId || ""}
+                        onChange={handleSpaceChange}
+                        disabled={!spaces.length}
+                      >
+                        {spaces.length > 0 ? (
+                          spaces.map((space) => (
+                            <option key={space.id} value={space.id}>
+                              {space.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="" disabled>
+                            Không có Space
+                          </option>
+                        )}
+                      </select>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="tools">
+                <div className="shop-it" onClick={handleOrderSubmit}>
+                  <i className="fa-solid fa-cart-plus"></i>
+                  Đặt hàng
+                </div>
               </div>
             </div>
           </div>

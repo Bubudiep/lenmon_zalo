@@ -7,6 +7,8 @@ import Restaurant_layout from "./restaurants/res-layout";
 import Restaurant_menu from "./restaurants/res-menu";
 import Restaurant_pupup from "./restaurants/res-popup";
 import Restaurant_cart from "./restaurants/res-cart";
+import Restaurant_order from "./restaurants/res-order";
+import { io } from "socket.io-client";
 
 const Restaurant = () => {
   const [user, setUser] = useState(false);
@@ -17,8 +19,9 @@ const Restaurant = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const location = useLocation();
+  const [token, settoken] = useState(location?.state?.token ?? false);
+  const [id, setid] = useState(location?.state?.id ?? false);
   const [itemQTY, setItemQTY] = useState([]);
-  const { id, token } = location.state || {};
   const getIdFromQuery = () => {
     const params = new URLSearchParams(location.search);
     return params.get("id");
@@ -55,17 +58,51 @@ const Restaurant = () => {
       setItemQTY((old) => old.filter((item) => item.id !== e.id));
     }
   };
+  const setoderSuccess = (e) => {
+    if (e.data) {
+      setRestData((old) => ({
+        ...old,
+        myOrder: [e.data, ...(old.myOrder || [])],
+      }));
+      setTabActive("my_order");
+      setItemQTY([]);
+    }
+  };
   useEffect(() => {
     const restaurantId = id || getIdFromQuery();
-    const accessToken = token || user?.app?.access_token;
-
+    if (user?.app?.access_token) {
+      settoken(user?.app?.access_token);
+    }
+    const accessToken = token;
     if (restaurantId && accessToken) {
       fetchRestaurantData(restaurantId, accessToken);
     } else {
       setShowLogin(true);
       setLoading(false);
     }
-  }, [id, token, user]);
+
+    const newSocket = io("http://localhost:3009", {
+      transports: ["websocket"],
+      auth: {
+        token: token,
+      },
+    });
+    newSocket.on("connect", () => {
+      console.log("connected!");
+      newSocket.on("message", (data) => {
+        console.log("Received message:", data);
+      });
+      newSocket.on("private_event", (data) => {
+        console.log("Received message:", data);
+      });
+    });
+    newSocket.on("disconnect", () => {
+      console.log("Disconnected to socket server on port 3009");
+    });
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [user]);
   return (
     <>
       {loading && (
@@ -89,6 +126,7 @@ const Restaurant = () => {
                 itemQTY={itemQTY}
                 restData={restData}
                 token={token}
+                setoderSuccess={setoderSuccess}
                 onClose={() => {
                   setShowCart(false);
                 }}
@@ -136,11 +174,11 @@ const Restaurant = () => {
                     <div className="value">Sản phẩm</div>
                   </div>
                   <div className="items">
-                    <div className="icon">0</div>
+                    <div className="icon">{restData?.totalFollow ?? 0}</div>
                     <div className="value">Theo dõi</div>
                   </div>
                   <div className="items">
-                    <div className="icon">0</div>
+                    <div className="icon">{restData?.totalLike ?? 0}</div>
                     <div className="value">Yêu thích</div>
                   </div>
                 </div>
@@ -154,7 +192,7 @@ const Restaurant = () => {
                       }`}
                       onClick={() => setTabActive("layouts")}
                     >
-                      Tình trạng
+                      Tổng quan
                     </div>
                   </div>
                   <div className="items">
@@ -164,7 +202,23 @@ const Restaurant = () => {
                       }`}
                       onClick={() => setTabActive("menus")}
                     >
-                      Thực đơn
+                      Thực đơn{" "}
+                      {itemQTY.length > 0 && (
+                        <div className="count">{itemQTY.length}</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="items">
+                    <div
+                      className={`button ${
+                        tabActive === "my_order" ? "active" : ""
+                      }`}
+                      onClick={() => setTabActive("my_order")}
+                    >
+                      Đơn của tôi{" "}
+                      {restData?.myOrder.length > 0 && (
+                        <div className="count">{restData.myOrder.length}</div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -182,6 +236,13 @@ const Restaurant = () => {
                         handleAddItem(e);
                         setShowCart(true);
                       }}
+                    />
+                  )}
+                  {tabActive === "my_order" && restData.myOrder && (
+                    <Restaurant_order
+                      restData={restData}
+                      token={token}
+                      setRestData={setRestData}
                     />
                   )}
                 </div>
