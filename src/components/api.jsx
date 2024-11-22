@@ -8,8 +8,8 @@ import {
 } from "zmp-sdk/apis";
 
 const api = axios.create({
-  baseURL: "http://localhost:5005/api",
-  // baseURL: "https://ipays.vn/api",
+  // baseURL: "http://localhost:5005/api",
+  baseURL: "https://ipays.vn/api",
 });
 
 // Thêm request interceptor để ghi lại thời gian bắt đầu

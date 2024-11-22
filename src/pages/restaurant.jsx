@@ -81,7 +81,15 @@ const Restaurant = () => {
       setLoading(false);
     }
 
-    const newSocket = io("http://localhost:3009", {
+    // const newSocket = io("http://localhost:3009", {
+    //   transports: ["websocket"],
+    //   auth: {
+    //     token: token,
+    //   },
+    // });
+
+    const newSocket = io("https://ipays.vn", {
+      path: "/socket.io",
       transports: ["websocket"],
       auth: {
         token: token,
